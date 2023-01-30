@@ -12,9 +12,9 @@ target_dir=$2
 if [[ $target_dir == *":"* ]]; then
 
 # To remote targets, use rsync over ssh
-  source_dir=$target_dir
-  source=$(echo $source_dir | awk -F':' '{print $1}')
-  remote_dir=$(echo $source_dir | awk -F':' '{print $2}')
+  server_dir=$target_dir
+  server=$(echo $server_dir | awk -F':' '{print $1}')
+  remote_dir=$(echo $server_dir | awk -F':' '{print $2}')
  
   timestamp=$(date +%Y-%m-%d_%H-%M-%S)
   backup_dir="$remote_dir/$timestamp"
@@ -26,6 +26,17 @@ if [[ $target_dir == *":"* ]]; then
   ssh $server "ln -snf $backup_dir $remote_dir/latest"
 
 else
+  # To local targets will use local rsync  
+
+ timestamp=$(date +%Y-%m-%d_%H-%M-%S)
+ backup_dir="$target_dir/$timestamp"
+
+ mkdir $backup_dir
+
+ rsync -avz --link-dest=$target_dir/latest $sources_dir $backup_dir
+
+# Update the symlink for the latest backup
+ ln -snf $backup_dir $target_dir/latest
 
 
 fi
