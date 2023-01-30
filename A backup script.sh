@@ -18,9 +18,9 @@ if [[ $target_dir == *":"* ]]; then
  
   timestamp=$(date +%Y-%m-%d_%H-%M-%S)
   backup_dir="$remote_dir/$timestamp"
-  ssh $source "mkdir $backup_dir"
+  ssh $server "mkdir $backup_dir"
 
-  rsync -avz -e "ssh -T" --link-dest=$server:$remote_dir/latest $source_dir $server:$backup_dir
+  rsync -avz -e "ssh -T" --link-dest=$server:$remote_dir/latest $src_dir $server:$backup_dir
 
 # The latest backup, will be updated the symlink
   ssh $server "ln -snf $backup_dir $remote_dir/latest"
@@ -28,12 +28,12 @@ if [[ $target_dir == *":"* ]]; then
 else
   # To local targets will use local rsync  
 
- timestamp=$(date +%Y-%m-%d_%H-%M-%S)
+timestamp=$(date +%Y-%m-%d_%H-%M-%S)
  backup_dir="$target_dir/$timestamp"
 
  mkdir $backup_dir
 
- rsync -avz --link-dest=$target_dir/latest $sources_dir $backup_dir
+ rsync -avz --link-dest=$target_dir/latest $src_dir $backup_dir
 
 # Update the symlink for the latest backup
  ln -snf $backup_dir $target_dir/latest
