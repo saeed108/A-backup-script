@@ -38,5 +38,4 @@ else
 # Update the symlink for the latest backup
  ln -snf $backup_dir $target_dir/latest
 
-
 fi
